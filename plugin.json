@@ -1,0 +1,7 @@
+{
+  "id": "locale-remulator-wasm",
+  "name": "Locale Remulator (WASM)",
+  "version": "0.1.0",
+  "kind": "wrapper",
+  "entry": "locale_remulator_wasm_plugin.wasm"
+}
