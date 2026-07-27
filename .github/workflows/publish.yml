@@ -66,6 +66,27 @@ jobs:
           files: |
             dist/locale_remulator_wasm_plugin.wasm
             dist/plugin.json
-          body: Auto-published by CI from plugin.json version ${{ steps.version.outputs.version }}.
+          body: |
+            Auto-published by CI from plugin.json version ${{ steps.version.outputs.version }}.
+
+            Wrapper-kind plugins don't support install-by-URL in Concourse yet - copy the
+            .wasm and plugin.json manually into
+            <app data dir>/wasm-plugins/wrapper/locale-remulator-wasm/. The manifest alone is
+            still linkable directly:
+            https://github.com/smh0505/locale-remulator-wasm-plugin/releases/latest/download/plugin.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write job summary
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          {
+            echo "### Published v${{ steps.version.outputs.version }}"
+            echo
+            echo "Wrapper-kind plugins don't support install-by-URL in Concourse yet - copy the .wasm and plugin.json manually into <app data dir>/wasm-plugins/wrapper/locale-remulator-wasm/."
+            echo
+            echo "Manifest URL:"
+            echo '```'
+            echo "https://github.com/smh0505/locale-remulator-wasm-plugin/releases/latest/download/plugin.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
