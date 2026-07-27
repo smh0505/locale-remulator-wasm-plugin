@@ -3,5 +3,6 @@
   "name": "Locale Remulator (WASM)",
   "version": "0.1.0",
   "kind": "wrapper",
-  "entry": "locale_remulator_wasm_plugin.wasm"
+  "entry": "locale_remulator_wasm_plugin.wasm",
+  "installable": true
 }

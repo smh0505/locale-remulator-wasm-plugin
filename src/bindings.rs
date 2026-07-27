@@ -1505,6 +1505,49 @@ pub mod exports {
                 }
                 #[doc(hidden)]
                 #[allow(non_snake_case)]
+                pub unsafe fn _export_uninstall_cabi<T: Guest>() -> *mut u8 {
+                    #[cfg(target_arch = "wasm32")] _rt::run_ctors_once();
+                    let result0 = T::uninstall();
+                    let ptr1 = (&raw mut _RET_AREA.0).cast::<u8>();
+                    match result0 {
+                        Ok(_) => {
+                            *ptr1.add(0).cast::<u8>() = (0i32) as u8;
+                        }
+                        Err(e) => {
+                            *ptr1.add(0).cast::<u8>() = (1i32) as u8;
+                            let vec2 = (e.into_bytes()).into_boxed_slice();
+                            let ptr2 = vec2.as_ptr().cast::<u8>();
+                            let len2 = vec2.len();
+                            ::core::mem::forget(vec2);
+                            *ptr1
+                                .add(2 * ::core::mem::size_of::<*const u8>())
+                                .cast::<usize>() = len2;
+                            *ptr1
+                                .add(::core::mem::size_of::<*const u8>())
+                                .cast::<*mut u8>() = ptr2.cast_mut();
+                        }
+                    };
+                    ptr1
+                }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
+                pub unsafe fn __post_return_uninstall<T: Guest>(arg0: *mut u8) {
+                    let l0 = i32::from(*arg0.add(0).cast::<u8>());
+                    match l0 {
+                        0 => {}
+                        _ => {
+                            let l1 = *arg0
+                                .add(::core::mem::size_of::<*const u8>())
+                                .cast::<*mut u8>();
+                            let l2 = *arg0
+                                .add(2 * ::core::mem::size_of::<*const u8>())
+                                .cast::<usize>();
+                            _rt::cabi_dealloc(l1, l2, 1);
+                        }
+                    }
+                }
+                #[doc(hidden)]
+                #[allow(non_snake_case)]
                 pub unsafe fn _export_is_installed_cabi<T: Guest>() -> i32 {
                     #[cfg(target_arch = "wasm32")] _rt::run_ctors_once();
                     let result0 = T::is_installed();
@@ -1697,6 +1740,7 @@ pub mod exports {
                     /// exists, and runs the real vendor installer (visible, blocking until closed) for
                     /// whatever registration step only it can do.
                     fn install() -> Result<(), _rt::String>;
+                    fn uninstall() -> Result<(), _rt::String>;
                     fn is_installed() -> bool;
                     fn list_profiles() -> Result<_rt::Vec<LocaleProfile>, _rt::String>;
                     fn launch(
@@ -1715,6 +1759,14 @@ pub mod exports {
                         extern "C" fn _post_return_install(arg0 : * mut u8,) { unsafe {
                         $($path_to_types)*:: __post_return_install::<$ty > (arg0) } }
                         #[unsafe (export_name =
+                        "gamelib:plugin/wrapper-plugin@0.1.0#uninstall")] unsafe extern
+                        "C" fn export_uninstall() -> * mut u8 { unsafe {
+                        $($path_to_types)*:: _export_uninstall_cabi::<$ty > () } }
+                        #[unsafe (export_name =
+                        "cabi_post_gamelib:plugin/wrapper-plugin@0.1.0#uninstall")]
+                        unsafe extern "C" fn _post_return_uninstall(arg0 : * mut u8,) {
+                        unsafe { $($path_to_types)*:: __post_return_uninstall::<$ty >
+                        (arg0) } } #[unsafe (export_name =
                         "gamelib:plugin/wrapper-plugin@0.1.0#is-installed")] unsafe
                         extern "C" fn export_is_installed() -> i32 { unsafe {
                         $($path_to_types)*:: _export_is_installed_cabi::<$ty > () } }
@@ -1858,8 +1910,8 @@ pub(crate) use __export_wrapper_plugin_world_impl as export;
 )]
 #[doc(hidden)]
 #[allow(clippy::octal_escapes)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1210] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xaf\x08\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1224] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xbd\x08\x01A\x02\x01\
 A\x05\x01B1\x01ks\x01r\x06\x02ids\x05titles\x0fexecutable-paths\x08platforms\x0d\
 cover-art-url\0\x0binstall-dir\0\x04\0\x0agame-entry\x03\0\x01\x01r\x02\x04names\
 \x04guids\x04\0\x0elocale-profile\x03\0\x03\x01@\x03\x04hives\x04paths\x05values\
@@ -1878,14 +1930,14 @@ rap-single-subdir\x01\x17\x01@\x02\x03srcs\x04dests\0\x0b\x04\0\x0breplace-dir\x
 ings-get\x01\x1a\x01@\x02\x03keys\x05values\x01\0\x04\0\x0csettings-set\x01\x1b\x01\
 @\x02\x07game-idx\x03keys\0\0\x04\0\x0fplugin-data-get\x01\x1c\x01@\x03\x07game-\
 idx\x03keys\x05values\x01\0\x04\0\x0fplugin-data-set\x01\x1d\x03\0\x19gamelib:pl\
-ugin/host@0.1.0\x05\0\x02\x03\0\0\x0elocale-profile\x01B\x0d\x02\x03\x02\x01\x01\
+ugin/host@0.1.0\x05\0\x02\x03\0\0\x0elocale-profile\x01B\x0e\x02\x03\x02\x01\x01\
 \x04\0\x0elocale-profile\x03\0\0\x01j\0\x01s\x01@\0\0\x02\x04\0\x07install\x01\x03\
-\x01@\0\0\x7f\x04\0\x0cis-installed\x01\x04\x01p\x01\x01j\x01\x05\x01s\x01@\0\0\x06\
-\x04\0\x0dlist-profiles\x01\x07\x01@\x02\x0cprofile-guids\x0fexecutable-paths\0\x02\
-\x04\0\x06launch\x01\x08\x04\0#gamelib:plugin/wrapper-plugin@0.1.0\x05\x02\x04\0\
-)gamelib:plugin/wrapper-plugin-world@0.1.0\x04\0\x0b\x1a\x01\0\x14wrapper-plugin\
--world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-component\x070.227\
-.1\x10wit-bindgen-rust\x060.41.0";
+\x04\0\x09uninstall\x01\x03\x01@\0\0\x7f\x04\0\x0cis-installed\x01\x04\x01p\x01\x01\
+j\x01\x05\x01s\x01@\0\0\x06\x04\0\x0dlist-profiles\x01\x07\x01@\x02\x0cprofile-g\
+uids\x0fexecutable-paths\0\x02\x04\0\x06launch\x01\x08\x04\0#gamelib:plugin/wrap\
+per-plugin@0.1.0\x05\x02\x04\0)gamelib:plugin/wrapper-plugin-world@0.1.0\x04\0\x0b\
+\x1a\x01\0\x14wrapper-plugin-world\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\
+\x0dwit-component\x070.227.1\x10wit-bindgen-rust\x060.41.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

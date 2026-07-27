@@ -56,7 +56,7 @@ interface host {
     /// Atomically replaces dest with src (removing any existing dest first).
     replace-dir: func(src: string, dest: string) -> result<_, string>;
 
-    /// This plugin's own writable directory (`<app data>/wasm-plugins/<plugin-id>/`) - for a
+    /// This plugin's own writable directory (`<app data>/wasm-plugins/<kind>/<plugin-id>/`) - for a
     /// plugin that manages its own downloaded dependency (e.g. a wrapper plugin's managed
     /// install) rather than just reading/scanning existing files elsewhere.
     plugin-dir: func() -> result<string, string>;
@@ -99,6 +99,7 @@ interface wrapper-plugin {
     /// exists, and runs the real vendor installer (visible, blocking until closed) for
     /// whatever registration step only it can do.
     install: func() -> result<_, string>;
+    uninstall: func() -> result<_, string>;
     is-installed: func() -> bool;
 
     list-profiles: func() -> result<list<locale-profile>, string>;

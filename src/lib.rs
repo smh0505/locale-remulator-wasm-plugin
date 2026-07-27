@@ -142,6 +142,10 @@ impl Guest for LocaleRemulatorPlugin {
         host::run_and_wait(&format!("{}/LRInstaller.exe", dest_dir), &[], &dest_dir)
     }
 
+    fn uninstall() -> Result<(), String> {
+        host::remove_dir(&install_dir()?)
+    }
+
     fn is_installed() -> bool {
         proc_path().map(|p| host::path_exists(&p)).unwrap_or(false)
     }
