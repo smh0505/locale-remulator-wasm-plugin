@@ -26,16 +26,20 @@ Output: `target/wasm32-wasip1/debug/locale_remulator_wasm_plugin.wasm`.
 ## Installing into a running Concourse
 
 Either build locally (above) or grab the prebuilt `.wasm` + `plugin.json` from this repo's
-Releases page once pushed - CI (`.github/workflows/publish.yml`) publishes a new release
+[Releases](https://github.com/smh0505/locale-remulator-wasm-plugin/releases) - CI (`.github/workflows/publish.yml`) publishes a new release
 automatically whenever `plugin.json`'s `version` is bumped on `main`. Wrapper-kind plugins
-don't support install-by-URL in Concourse yet (only source plugins and themes do) - copy the
-files in manually:
+don't support install-by-URL in Concourse yet (only source plugins, metadata plugins, and themes do) - the
+latest manifest is still linkable directly, for reference or scripting a manual copy:
+
+```
+https://github.com/smh0505/locale-remulator-wasm-plugin/releases/latest/download/plugin.json
+```
 
 Copy the compiled `.wasm` and `plugin.json` into
 `<app data dir>/wasm-plugins/wrapper/locale-remulator-wasm/` (Windows:
 `%APPDATA%\com.bloppy.concourse\wasm-plugins\wrapper\locale-remulator-wasm\`). It'll show up in
 Settings' Plugins panel under the Wrapper tab next time the app starts, as
-**Locale Remulator (WASM)** - clicking "Install" there (in the plugin's own settings row)
+**Locale Remulator** - clicking "Install" there (in the plugin's own settings row)
 downloads and installs the real thing.
 
 ## Versioning
@@ -43,4 +47,4 @@ downloads and installs the real thing.
 Plain SemVer (`Cargo.toml` + `plugin.json`'s `version`), independent of Concourse's own
 milestone-tracked version - patch for fixes, minor for backward-compatible new capabilities,
 major for breaking manifest/WIT interface changes. Full convention:
-`.claude/CLAUDE.md` (Plugin Versioning) in the main `concourse` repo.
+[`.claude/CLAUDE.md`](https://github.com/smh0505/Concourse/blob/main/.claude/CLAUDE.md) (Plugin Versioning) in the main [Concourse](https://github.com/smh0505/Concourse) repo.
