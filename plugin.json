@@ -1,9 +1,10 @@
 {
   "id": "locale-remulator-wasm",
   "name": "Locale Remulator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "wrapper",
   "entry": "locale_remulator_wasm_plugin.wasm",
   "installable": true,
-  "capabilities": ["run-programs"]
+  "capabilities": ["run-programs"],
+  "httpScopes": ["github.com"]
 }

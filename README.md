@@ -22,6 +22,11 @@ an explicit, visible per-plugin grant (Milestone 13). Wrapper plugins aren't ins
 yet (see above), so this always shows as a "Permission needed" row with a Grant button in
 Settings' Wrapper tab until granted once.
 
+Also declares `httpScopes: ["github.com"]` (Milestone 13 URL allowlisting) - covers both
+`api.github.com` (release lookup) and the actual download, whose target URL is dynamic
+(`asset.browser_download_url`, not a literal in source) but always GitHub-issued, never
+attacker-influenced input.
+
 ## Building
 
 ```sh
