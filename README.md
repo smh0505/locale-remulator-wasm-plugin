@@ -13,6 +13,15 @@ This is a real, separate repo on purpose - same reasoning as `steam-source-wasm-
 genuinely exercising the "install arbitrary third-party code" model the WASM plugin system is
 for.
 
+## Permissions
+
+Declares the `run-programs` capability (`plugin.json`'s `capabilities` field) - both
+`install()` (runs `LRInstaller.exe` via `host::run-and-wait`) and `launch()` (runs the
+configured game via `host::spawn-process`) need it. Concourse gates both host functions behind
+an explicit, visible per-plugin grant (Milestone 13). Wrapper plugins aren't install-by-URL
+yet (see above), so this always shows as a "Permission needed" row with a Grant button in
+Settings' Wrapper tab until granted once.
+
 ## Building
 
 ```sh
